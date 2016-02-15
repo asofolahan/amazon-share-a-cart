@@ -1,6 +1,6 @@
-# FasterJS
+# Amazon Share-A-Cart
 
-FasterJS is an extension that replaces commonly hosted web-objects with local redirects. This makes your browsing faster, saves bandwidth since there is no download, and makes youre browsing a little more private.
+Amazon Share-A-Cart is an extension for Google Chrome that allows you to share the contents of your Amazon.com cart with anyone else.
 
 ## Code license
 
