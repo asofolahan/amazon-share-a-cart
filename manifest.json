@@ -1,0 +1,43 @@
+{
+	"name" : "Amazon Share-A-Cart",
+	"version" : "0.1",
+	"description" : "Amazon Share-A-Cart allows you to share the contents of your cart with anyone else.",
+	"permissions": [
+		"storage",
+		"unlimitedStorage",
+		"tabs",
+		"webNavigation",
+		"webRequest",
+		"webRequestBlocking",
+		"http://*/*", "https://*/*"
+	],
+	"icons": { "16": "images/amazon-cart-16.png", "64": "images/amazon-cart-64.png", "128": "images/amazon-cart-128.png" },
+	"browser_action": {
+		"default_icon": "images/amazon-cart-16.png",
+		"default_title": "Amazon Share-A-Cart",
+		"default_popup": "popup.html"
+	},
+	"background": {
+		"scripts": [
+			"js/jquery-2.1.3.min.js",
+			"js/firebase-min-2.4.0.js",
+			"browser-js/chrome.api.js",
+			"lib/strip-headers.js",
+			"lib/background.js"
+		]
+	},
+	"content_scripts": [ {
+		 "all_frames": true,
+		 "run_at": "document_start",
+		 "js": [ "lib/injects/inject-cart.js", "browser-js/chrome.api.js" ],
+		 "matches": [ "https://www.amazon.com/gp/cart/view.html*" ]
+	},
+	{
+		 "all_frames": true,
+		 "run_at": "document_start",
+		 "js": [ "lib/injects/inject-add-cart.js", "browser-js/chrome.api.js" ],
+		 "matches": [ "https://www.amazon.com/gp/aws/cart/add.html*" ]
+	} ],
+	"content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
+	"manifest_version": 2
+}
