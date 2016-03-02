@@ -1,0 +1,16 @@
+{
+  "title": "Amazon Share-A-Cart",
+  "name": "amazon-share-a-cart",
+  "version": "0.1.0",
+  "description": "Amazon Share-A-Cart allows you to share the contents of your cart with anyone else.",
+  "main": "lib/background.js",
+  "author": "",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack"
+  ]
+}

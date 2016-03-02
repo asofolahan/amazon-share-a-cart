@@ -1,0 +1,83 @@
+<!doctype html>
+
+<html>
+<head>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="css/font-awesome.min.css" rel="stylesheet">
+
+	<style>
+	@font-face {
+		font-family: 'norwester';
+		src: url(css/webfonts/norwester.eot);
+		src: url(css/webfonts/norwester.eot?#iefix) format("embedded-opentype"), url(css/webfonts/norwester.woff) format("woff"), url(css/webfonts/norwester.ttf) format("truetype");
+	}
+
+	* {
+		border: 0;
+		margin: 0;
+		padding: 2px;
+	}
+
+	body {
+		width: 200px;
+		height: auto;
+		background: #fff;
+		overflow-y: auto;
+		overflow-x: hidden;
+		font-family: "norwester";
+		font-size: small;
+	}
+
+	.header {
+		font-size: x-large;
+	}
+
+	.label {
+		color: #000000;
+	}
+
+	.link-icon {
+		color: black;
+	}
+
+	#my-row, #entry-row, #error-row {
+		display: none;
+	}
+	</style>
+
+	<!-- <script src="js/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="js/popup.js"></script> -->
+</head>
+
+<body>
+	<div class="header">
+		<img src="images/amazon-cart-64.png" width="32"/> Share-A-Cart
+	</div>
+
+	<div id="error-row" class="text-danger" style="margin-top: 15px;">
+
+	</div>
+
+	<div id="my-row" style="margin-top: 15px;">
+		<span>My cart's id:</span>
+		<span id="my-cart-id"></span>
+	</div>
+
+	<div id="button-row" style="margin-top: 15px;">
+		<button id="send-cart" class="btn btn-primary btn-sm">Send Cart</button>
+		<button id="receive-cart" class="btn btn-primary btn-sm">Receive Cart</button>
+		<i id="working" class="fa fa-refresh fa-spin"></i>
+	</div>
+
+	<div id="entry-row" style="margin-top: 15px;">
+	  <div class="form-group">
+	    <label for="cart-id">Cart ID</label>
+	    <input type="text" class="form-control" id="cart-id">
+	  </div>
+
+		<button id="back" class="btn btn-primary btn-sm">Back</button>
+	  <button id="get-cart" class="btn btn-primary btn-sm">Get Cart</button>
+	</div>
+</body>
+</html>
