@@ -59,7 +59,7 @@ panel.port.on('send-cart', function() {
   }
 
   workFrame = pageWorker.Page({
-    contentScriptFile: [ self.data.url('js/firebase-min-2.4.0.js'), self.data.url('js/cart-worker.js') ],
+    contentScriptFile: [ self.data.url('js/firebase-min-2.4.1.js'), self.data.url('js/cart-worker.js') ],
     contentURL: 'https://www.amazon.com/gp/cart/view.html'
   });
 
@@ -102,7 +102,7 @@ panel.port.on('receive-cart', function(request) {
   }
 
   workFrame = pageWorker.Page({
-    contentScriptFile: [ self.data.url('js/firebase-min-2.4.0.js'), self.data.url('js/fire-worker.js') ],
+    contentScriptFile: [ self.data.url('js/firebase-min-2.4.1.js'), self.data.url('js/fire-worker.js') ],
     contentURL: self.data.url('fire-worker.html')
   });
 
