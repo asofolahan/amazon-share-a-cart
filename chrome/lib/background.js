@@ -129,7 +129,7 @@ browser.onInstall(
 
 
 function UUID() {
-	return ("0000" + (Math.random() * Math.pow(36,4) << 0).toString(36)).slice(-5).toUpperCase()
+	return ("0000" + (Math.random() * Math.pow(36, 5) << 0).toString(36)).slice(-5).toUpperCase()
 }
 
 	/* May need a longer one?
