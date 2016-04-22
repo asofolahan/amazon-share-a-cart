@@ -1,8 +1,8 @@
 {
-  "title": "Amazon Share-A-Cart",
+  "title": "Share-A-Cart for Amazon",
   "name": "amazon-share-a-cart",
-  "version": "0.1.1",
-  "description": "Amazon Share-A-Cart allows you to share the contents of your cart with anyone else.",
+  "version": "0.2",
+  "description": "Share-A-Cart for Amazon allows you to share the contents of your cart with anyone else.",
   "main": "lib/background.js",
   "author": "",
   "engines": {

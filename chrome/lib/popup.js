@@ -1,5 +1,6 @@
 function init() {
-	$('#working').hide();
+	$('.working').hide();
+
 	$('#send-cart').click(function() {
 		$('#working').show();
 
@@ -14,6 +15,7 @@ function init() {
 	});
 
 	$('#get-cart').click(function() {
+		$('#working-get-cart').show();
 		var id = $('#cart-id').val();
 
 		if (id) {
@@ -29,6 +31,9 @@ function init() {
 		$('#button-row').show();
 	});
 
+	$('#halp').click(function() {
+		chrome.tabs.create({url: "halp.html"});
+	});
 
 	browser.onMessage(
 		function(request, sender, sendResponse) {

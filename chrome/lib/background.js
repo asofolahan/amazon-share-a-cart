@@ -3,25 +3,27 @@
 // found in the LICENSE file.
 
 
-/*
-1. Read cart contents
-2. Share cart contents
-3. Empty cart? and add new contents
-*/
-
 const LINKS = {
 	cart: 'https://www.amazon.com/gp/cart/view.html'
 }
 
-var cart;
+var j, cart, expected;
 
 var firebase = new Firebase('https://share-a-cart.firebaseio.com/');
 Firebase.goOffline();
 
-var workFrame = document.createElement("IFRAME");
-workFrame.setAttribute("src", "");
+var workFrame = document.createElement('IFRAME');
+workFrame.setAttribute('src', '');
 workFrame.id = 'work-frame';
 document.body.appendChild(workFrame);
+
+// frames for loading items. Splitting at 1x35 items, for a total max of 350
+for (j = 0; j < 10; j++) {
+	var f = document.createElement('IFRAME');
+	f.setAttribute('src', '');
+	f.id = 'load-' + j;
+	document.body.appendChild(f);
+}
 
 
 browser.initBadge({
@@ -35,7 +37,13 @@ browser.onMessage(
 		if (request.action == 'send-cart') {
 			workFrame.src = LINKS.cart;
 		} else if (request.action == 'cart-loaded') {
-			browser.newTab(LINKS.cart);
+			expected--;
+
+			if (expected == 0) {
+				browser.newTab(LINKS.cart);
+			} else {
+				// we wait!
+			}
 		} else if (request.action == 'get-initial') {
 			if (cart) {
 				browser.sendMessage({
@@ -59,6 +67,7 @@ browser.onMessage(
 				}
 
 				var counter = 1,
+				 pages = [],
 				 params = [],
 				 link = 'https://www.amazon.com/gp/aws/cart/add.html?AssociateTag=repricin-20&tag=repricin-20&',
 				 remote = snapshot.val();
@@ -68,14 +77,33 @@ browser.onMessage(
 						params.push('ASIN.' + counter + '=' + item.asin);
 						params.push('Quantity.' + counter + '=' + item.quantity);
 
+						if (counter == 35) {
+							pages.push( params.slice(0) );
+							params = [];
+
+							counter = 0;
+						}
+
 						counter++;
 					});
 
-				link = link + params.join('&');
-
-				workFrame.src = link;
-
 				Firebase.goOffline();
+
+				// add any remainder items
+				pages.push( params.slice(0) );
+
+
+				// cut number of pages if more than 350 items.
+				pages = pages.slice(0, 9);
+
+				for (var i = 0; i < pages.length; i++) {
+					var pageLink = link + pages[i].join('&');
+
+					var f = document.getElementById('load-' + i );
+					f.src = pageLink;
+				}
+
+				expected = pages.length;
 			});
 		} else if (request.action == 'cart-contents') {
 			if (request.contents.length == 0) {
@@ -111,6 +139,15 @@ browser.onMessage(
 					});
 
 					cart = id;
+
+					// Clear cart if needed
+					var emptyCart = localStorage['clearCart'] === 'true' ? true : false;
+
+					if (emptyCart === true) {
+						browser.sendMessage({
+							'action': 'nuke-cart'
+						});
+					}
 				}
 
 			});
@@ -120,10 +157,10 @@ browser.onMessage(
 
 browser.onInstall(
 	function(details) {
-		if (details.reason == "install") {
-				chrome.tabs.create({url: "halp.html"});
-		} else if (details.reason == "update") {
-			// Show updates?
+		if (details.reason == 'install') {
+			chrome.tabs.create({url: 'halp.html'});
+		} else if (details.reason == 'update') {
+			chrome.tabs.create({url: 'news.html'});
 		}
 	});
 
@@ -149,3 +186,19 @@ function UUID() {
 	  return self;
 	})();
 	*/
+
+
+
+/*
+Clear amazon shopping cart:
+
+c = document.querySelectorAll('#activeCartViewForm div.sc-list-body > div input[value=Delete]')
+
+for (var i = 0; i < c.length; i++) {
+  (function(item) {
+    setTimeout(function() {
+      console.log(item);
+      item.click() },
+    i * 1000 )})(c[i]);
+}
+*/

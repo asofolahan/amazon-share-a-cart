@@ -1,7 +1,7 @@
 {
-	"name" : "Amazon Share-A-Cart",
-	"version" : "0.1",
-	"description" : "Amazon Share-A-Cart allows you to share the contents of your cart with anyone else.",
+	"name" : "Share-A-Cart for Amazon",
+	"version" : "0.2",
+	"description" : "Share-A-Cart for Amazon allows you to share the contents of your cart with anyone else.",
 	"permissions": [
 		"storage",
 		"unlimitedStorage",
@@ -14,7 +14,7 @@
 	"icons": { "16": "images/amazon-cart-16.png", "64": "images/amazon-cart-64.png", "128": "images/amazon-cart-128.png" },
 	"browser_action": {
 		"default_icon": "images/amazon-cart-16.png",
-		"default_title": "Amazon Share-A-Cart",
+		"default_title": "Share-A-Cart for Amazon",
 		"default_popup": "popup.html"
 	},
 	"background": {
