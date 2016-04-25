@@ -1,9 +1,10 @@
 $(document).ready(function() {
   var config = {
-  		clearCart: localStorage['clearCart'] === 'true' ? true : false
+  	clearCart: localStorage['clearCart'] === 'true' ? true : false,
+    primary: localStorage['primary'] ? localStorage['primary'] : 'amazon.com'
   }
 
-
+  // clear cart option
   if (config.clearCart === true) {
     $('#do-clear').prop('checked', 'checked');
   }
@@ -12,6 +13,11 @@ $(document).ready(function() {
     localStorage['clearCart'] = $('#do-clear').prop('checked');
   });
 
+  // primary store option
+  $('#primary-store').val( config.primary );
+  $('#primary-store').change(function(e) {
+    localStorage['primary'] = $('#primary-store').val();
+  });
 
 
 

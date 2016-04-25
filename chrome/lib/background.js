@@ -3,23 +3,30 @@
 // found in the LICENSE file.
 
 
-const LINKS = {
-	cart: 'https://www.amazon.com/gp/cart/view.html'
-}
+let j, cart, expected,
+ config = {
+	clearCart: browser.localStorage['clearCart'] === 'true' ? true : false,
+	primary: browser.localStorage['primary'] ? browser.localStorage['primary'] : 'amazon.com'
+ },
+ LINKS = {
+	base: 'https://share-a-cart.firebaseio.com/'
+ },
+ firebase = new Firebase(LINKS.base);
 
-var j, cart, expected;
-
-var firebase = new Firebase('https://share-a-cart.firebaseio.com/');
 Firebase.goOffline();
 
-var workFrame = document.createElement('IFRAME');
+// set the links needed for operation on amazon sites
+refreshLinks();
+
+
+let workFrame = document.createElement('IFRAME');
 workFrame.setAttribute('src', '');
 workFrame.id = 'work-frame';
 document.body.appendChild(workFrame);
 
 // frames for loading items. Splitting at 1x35 items, for a total max of 350
 for (j = 0; j < 10; j++) {
-	var f = document.createElement('IFRAME');
+	let f = document.createElement('IFRAME');
 	f.setAttribute('src', '');
 	f.id = 'load-' + j;
 	document.body.appendChild(f);
@@ -37,10 +44,10 @@ browser.onMessage(
 		if (request.action == 'send-cart') {
 			workFrame.src = LINKS.cart;
 		} else if (request.action == 'cart-loaded') {
-			expected--;
+			expected.count--;
 
-			if (expected == 0) {
-				browser.newTab(LINKS.cart);
+			if (expected.count == 0) {
+				browser.newTab(expected.dest);
 			} else {
 				// we wait!
 			}
@@ -52,11 +59,11 @@ browser.onMessage(
 				});
 			}
 		} else if (request.action == 'receive-cart') {
-			var id = request.id;
+			let id = request.id;
 
 			Firebase.goOnline();
 
-			firebase.child(id).on("value", function(snapshot) {
+			firebase.child(id).on('value', function(snapshot) {
 			  if (!snapshot.val()) {
 					browser.sendMessage({
 						'action': 'show-error',
@@ -66,11 +73,11 @@ browser.onMessage(
 					return;
 				}
 
-				var counter = 1,
+				let counter = 1,
 				 pages = [],
 				 params = [],
-				 link = 'https://www.amazon.com/gp/aws/cart/add.html?AssociateTag=repricin-20&tag=repricin-20&',
-				 remote = snapshot.val();
+				 remote = snapshot.val(),
+				 link = remote.dest ? 'https://www.' + remote.dest + '/gp/aws/cart/add.html?AssociateTag=repricin-20&tag=repricin-20&' : 'https://www.amazon.com/gp/aws/cart/add.html?AssociateTag=repricin-20&tag=repricin-20&';
 
 				remote.cart.forEach(
 					function(item) {
@@ -96,14 +103,17 @@ browser.onMessage(
 				// cut number of pages if more than 350 items.
 				pages = pages.slice(0, 9);
 
-				for (var i = 0; i < pages.length; i++) {
-					var pageLink = link + pages[i].join('&');
+				for (let i = 0; i < pages.length; i++) {
+					let pageLink = link + pages[i].join('&');
 
-					var f = document.getElementById('load-' + i );
+					let f = document.getElementById('load-' + i );
 					f.src = pageLink;
 				}
 
-				expected = pages.length;
+				expected = {
+					count: pages.length,
+					dest: remote.dest ? 'https://www.' + remote.dest + '/gp/cart/view.html' : 'https://www.amazon.com/gp/cart/view.html'
+				}
 			});
 		} else if (request.action == 'cart-contents') {
 			if (request.contents.length == 0) {
@@ -117,10 +127,11 @@ browser.onMessage(
 
 			Firebase.goOnline();
 
-			var id = UUID(),
+			let id = UUID(),
 			 ref = firebase.child(id);
 
 			ref.set({
+				'dest': config.primary,
 			  'cart': request.contents,
 			  'timestamp': (new Date()).getTime()
 			},
@@ -141,9 +152,7 @@ browser.onMessage(
 					cart = id;
 
 					// Clear cart if needed
-					var emptyCart = localStorage['clearCart'] === 'true' ? true : false;
-
-					if (emptyCart === true) {
+					if (config.clearCart === true) {
 						browser.sendMessage({
 							'action': 'nuke-cart'
 						});
@@ -153,6 +162,18 @@ browser.onMessage(
 			});
 		}
 	});
+
+
+// refresh config if changed
+$(window).bind('storage', function (e) {
+	if (e.originalEvent.key === 'primary') {
+		config.primary = browser.localStorage['primary'] ? browser.localStorage['primary'] : 'amazon.com';
+
+		refreshLinks();
+	} else if (e.originalEvent.key === 'clearCart') {
+		config.clearCart = browser.localStorage['clearCart'] === 'true' ? true : false;
+	}
+});
 
 
 browser.onInstall(
@@ -165,19 +186,28 @@ browser.onInstall(
 	});
 
 
+function refreshLinks() {
+	LINKS = {
+		base: 'https://share-a-cart.firebaseio.com/',
+		cart: 'https://www.' + config.primary + '/gp/cart/view.html',
+		awsCart: 'https://www.' + config.primary + '/gp/aws/cart/add.html?AssociateTag=repricin-20&tag=repricin-20&'
+	}
+}
+
+
 function UUID() {
-	return ("0000" + (Math.random() * Math.pow(36, 5) << 0).toString(36)).slice(-5).toUpperCase()
+	return ('0000' + (Math.random() * Math.pow(36, 5) << 0).toString(36)).slice(-5).toUpperCase()
 }
 
 	/* May need a longer one?
-	var UUID = (function() {
-	  var self = {};
-	  var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
+	let UUID = (function() {
+	  let self = {};
+	  let lut = []; for (let i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
 	  self.generate = function() {
-	    var d0 = Math.random()*0xffffffff|0;
-	    var d1 = Math.random()*0xffffffff|0;
-	    var d2 = Math.random()*0xffffffff|0;
-	    var d3 = Math.random()*0xffffffff|0;
+	    let d0 = Math.random()*0xffffffff|0;
+	    let d1 = Math.random()*0xffffffff|0;
+	    let d2 = Math.random()*0xffffffff|0;
+	    let d3 = Math.random()*0xffffffff|0;
 	    return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
 	      lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
 	      lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
@@ -194,7 +224,7 @@ Clear amazon shopping cart:
 
 c = document.querySelectorAll('#activeCartViewForm div.sc-list-body > div input[value=Delete]')
 
-for (var i = 0; i < c.length; i++) {
+for (let i = 0; i < c.length; i++) {
   (function(item) {
     setTimeout(function() {
       console.log(item);

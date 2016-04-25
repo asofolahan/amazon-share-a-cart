@@ -1,6 +1,6 @@
 {
 	"name" : "Share-A-Cart for Amazon",
-	"version" : "0.2",
+	"version" : "0.3",
 	"description" : "Share-A-Cart for Amazon allows you to share the contents of your cart with anyone else.",
 	"permissions": [
 		"storage",
@@ -30,13 +30,43 @@
 		 "all_frames": true,
 		 "run_at": "document_start",
 		 "js": [ "lib/injects/inject-cart.js", "browser-js/chrome.api.js" ],
-		 "matches": [ "https://www.amazon.com/gp/cart/view.html*" ]
+		 "matches": [
+       "https://www.amazon.com/gp/cart/view.html*",
+       "https://www.amazon.ca/gp/cart/view.html*",
+       "https://www.amazon.co.uk/gp/cart/view.html*",
+       "https://www.amazon.fr/gp/cart/view.html*",
+       "https://www.amazon.de/gp/cart/view.html*",
+       "https://www.amazon.it/gp/cart/view.html*",
+       "https://www.amazon.nl/gp/cart/view.html*",
+       "https://www.amazon.es/gp/cart/view.html*",
+       "https://www.amazon.cn/gp/cart/view.html*",
+       "https://www.amazon.in/gp/cart/view.html*",
+       "https://www.amazon.co.jp/gp/cart/view.html*",
+       "https://www.amazon.com.mx/gp/cart/view.html*",
+       "https://www.amazon.com.au/gp/cart/view.html*",
+       "https://www.amazon.com.br/gp/cart/view.html*"
+     ]
 	},
 	{
 		 "all_frames": true,
 		 "run_at": "document_start",
 		 "js": [ "lib/injects/inject-add-cart.js", "browser-js/chrome.api.js" ],
-		 "matches": [ "https://www.amazon.com/gp/aws/cart/add.html*" ]
+		 "matches": [
+       "https://www.amazon.com/gp/aws/cart/add.html*",
+       "https://www.amazon.ca/gp/aws/cart/add.html*",
+       "https://www.amazon.co.uk/gp/aws/cart/add.html*",
+       "https://www.amazon.fr/gp/aws/cart/add.html*",
+       "https://www.amazon.de/gp/aws/cart/add.html*",
+       "https://www.amazon.it/gp/aws/cart/add.html*",
+       "https://www.amazon.nl/gp/aws/cart/add.html*",
+       "https://www.amazon.es/gp/aws/cart/add.html*",
+       "https://www.amazon.cn/gp/aws/cart/add.html*",
+       "https://www.amazon.in/gp/aws/cart/add.html*",
+       "https://www.amazon.co.jp/gp/aws/cart/add.html*",
+       "https://www.amazon.com.mx/gp/aws/cart/add.html*",
+       "https://www.amazon.com.au/gp/aws/cart/add.html*",
+       "https://www.amazon.com.br/gp/aws/cart/add.html*"
+     ]
 	} ],
 	"content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
 	"manifest_version": 2,
