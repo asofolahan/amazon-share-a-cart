@@ -11,9 +11,21 @@ let j, cart, expected,
  LINKS = {
 	base: 'https://share-a-cart.firebaseio.com/'
  },
- firebase = new Firebase(LINKS.base);
+ fireConf = {
+ 	apiKey: "AIzaSyAzuNgvXnes_GvKzl44eMaZ4-te9jScDog",
+ 	authDomain: "share-a-cart.firebaseapp.com",
+ 	databaseURL: "https://share-a-cart.firebaseio.com",
+ 	storageBucket: "share-a-cart.appspot.com"
+};
 
-Firebase.goOffline();
+
+// firebase = new Firebase(LINKS.base);
+
+firebase.initializeApp(fireConf);
+
+firebase.database().goOffline();
+
+// var rootRef = firebase.database().ref();
 
 // set the links needed for operation on amazon sites
 refreshLinks();
@@ -61,10 +73,10 @@ browser.onMessage(
 		} else if (request.action == 'receive-cart') {
 			let id = request.id;
 
-			Firebase.goOnline();
+			firebase.database().goOnline();
 
-			firebase.child(id).on('value', function(snapshot) {
-			  if (!snapshot.val()) {
+			firebase.database().ref().child(id).on('value', function(snapshot) {
+				if (!snapshot.val()) {
 					browser.sendMessage({
 						'action': 'show-error',
 						'error': 'No such cart...'
@@ -94,7 +106,7 @@ browser.onMessage(
 						counter++;
 					});
 
-				Firebase.goOffline();
+				firebase.database().goOffline();
 
 				// add any remainder items
 				pages.push( params.slice(0) );
@@ -125,18 +137,18 @@ browser.onMessage(
 				return;
 			}
 
-			Firebase.goOnline();
+			firebase.database().goOnline();
 
 			let id = UUID(),
-			 ref = firebase.child(id);
+			 ref = firebase.database().ref().child(id);
 
 			ref.set({
 				'dest': config.primary,
-			  'cart': request.contents,
-			  'timestamp': (new Date()).getTime()
+				'cart': request.contents,
+				'timestamp': (new Date()).getTime()
 			},
 			function(err) {
-				Firebase.goOffline();
+				firebase.database().goOffline();
 
 				if (err) {
 					browser.sendMessage({
